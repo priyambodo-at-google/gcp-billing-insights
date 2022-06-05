@@ -1,7 +1,7 @@
 
 # How to Contribute to this Project
 
-Get the Clone URL from the repository: https://github.com/doddipriyambodo/doddipriyambodo-github-private-repo.git 
+Get the Clone URL from the repository: [https://github.com/doddipriyambodo/doddipriyambodo-github-private-repo.git ](https://github.com/priyambodo-at-google/gcp-billing-insights.git)
 
 ## Preparation and Configuration for MAC user
 
@@ -42,12 +42,12 @@ $ cat ~/.gitconfig
 Now, create the GIT repo in local Mac
 ```
 $ git init 
-$ git remote add origin https://github.com/doddipriyambodo/doddipriyambodo-github-private-repo.git
+$ git remote add origin https://github.com/priyambodo-at-google/gcp-billing-insights.git
 $ touch doddi.priyambodo
 $ git add .
 $ git status
 $ git commit -m "My First Commit"
-$ git tag -a v0.1 -m "version 0.1"
+$ git tag -a v0.1 -m "My First Comment"
 $ git status
 $ git log 
 $ git pull origin main --rebase
@@ -55,9 +55,11 @@ $ git push origin main
 ```
 
 If you need to cancel the last commit files:
+```
 $ git filter-branch --force --index-filter "git rm --cached --ignore-unmatch bicarait-tutorial-livestreaming/obs-mac-23.2.1-installer.pkg" --prune-empty --tag-name-filter cat -- --all
 $ git commit -m "delete large files"
 $ git push origin main --force
+```
 
 ## GIT Optional Implementation
 ```
