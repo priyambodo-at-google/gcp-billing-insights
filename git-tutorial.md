@@ -1,13 +1,9 @@
 
-# How to Initialize GIT for this Private Repo!
-
-Good resources for this: [http://gitimmersion.com/index.html](http://gitimmersion.com/index.html) and from 
-[https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners](https://product.hubspot.com/blog/git-and-github-tutorial-for-beginners)
-
+# How to Contribute to this Project
 
 Get the Clone URL from the repository: https://github.com/doddipriyambodo/doddipriyambodo-github-private-repo.git 
 
-## Preparation and Configuration
+## Preparation and Configuration for MAC user
 
 Check whether GIT already installed in MAC.
 ```
@@ -58,10 +54,10 @@ $ git pull origin main --rebase
 $ git push origin main 
 ```
 
-Cancel the last commit files:
+If you need to cancel the last commit files:
 $ git filter-branch --force --index-filter "git rm --cached --ignore-unmatch bicarait-tutorial-livestreaming/obs-mac-23.2.1-installer.pkg" --prune-empty --tag-name-filter cat -- --all
 $ git commit -m "delete large files"
-$ git push origin master --force
+$ git push origin main --force
 
 ## GIT Optional Implementation
 ```
@@ -69,11 +65,11 @@ $ git log --pretty=format:'%h %ad | %s%d [%an]' --graph --date=short
 $ git checkout <hash>
 $ git checkout -b development
 $ git branch
-$ git checkout master
+$ git checkout main
 $ git tag v1
 $ git checkout v1
-$ git merge master
-$ git rebase master
+$ git merge main
+$ git rebase main
 ```
 
 ## GIT Remote Implementation
@@ -82,7 +78,7 @@ $ git remote
 $ git remote show origin
 $ git branch -a
 $ git fetch
-$ git merge origin/master
+$ git merge origin/main
 $ git log
 ```
 ```
