@@ -28,8 +28,10 @@ base_url = "https://datastudio.google.com/reporting/create?"
 report_part_url = base_url + "c.reportId=c503be1b-f204-4141-adfe-0364491ebfd1"
 report_base_url = report_part_url + "&r.reportName=MyBillboard"
 
-std_proj_url = "&ds.ds39.connector=bigQuery&ds.ds39.projectId={}"
-std_table_url = "&ds.ds39.type=TABLE&ds.ds39.datasetId={}&ds.ds39.tableId={}"
+#ds-custom-vw_gcpbillinginsights_standard
+
+std_proj_url = "&ds.ds-custom-vw_gcpbillinginsights_standard.connector=bigQuery&ds.ds-custom-vw_gcpbillinginsights_standard.projectId={}"
+std_table_url = "&ds.ds-custom-vw_gcpbillinginsights_standard.type=TABLE&ds.ds-custom-vw_gcpbillinginsights_standard.datasetId={}&ds.ds-custom-vw_gcpbillinginsights_standard.tableId={}"
 standard_view_url = std_proj_url + std_table_url
 
 dtl_proj_url = "&ds.ds93.connector=bigQuery&ds.ds93.projectId={}"
