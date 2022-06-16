@@ -1,4 +1,19 @@
-# python billinginsights1.py -pr bicaraitdotcom-production -se bicaraitcom_dataset_billing_standard -bb bicaraitcom_dataset_billing_datastudio
+# How to Run this Python Code:
+# ============================
+# $ rm -rf bill-env
+# $ pip install virtualenv
+# $ virtualenv bill-env
+# $ source bill-env/bin/activate
+# $ pip install -r requirements.txt
+
+# $ python billinginsights1.py -pr <project_id> -se <standard_billing_ds> -bb <billinginsight_ds>
+# <project id> --> fill this with your existing/current project ID 
+# <standard billing ds> --> fill this with your existing/current standard billing dataset that you configure from billing
+# <billinginsight_ds> --> dataset of your bigquery to store the view of the billing insight
+# Example:
+# $ python billinginsights1.py -pr biracaritdotcom-production -se bicaraitcom_dataset_billing_standard -bb bicaraitcom_dataset_billing_datastudio
+
+# Verify that the view vw_gcpbillinginsights_standard already created in your selected dataset
 
 from google.cloud import bigquery
 from google.cloud import billing
