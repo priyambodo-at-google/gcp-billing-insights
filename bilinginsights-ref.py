@@ -11,6 +11,7 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+# python billinginsights-ref.py -pr bicaraitdotcom-production -se bicaraitcom_dataset_billing_standard -de bicaraitcom_dataset_billing_detailed -bb bicaraitcom_dataset_billing_datastudio
 
 from google.cloud import bigquery
 from google.cloud import billing
