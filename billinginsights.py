@@ -2,22 +2,26 @@
 # =================================
 # Open this link in the browser to open cloudshell and clone the project.
 # https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/GoogleCloudPlatform/professional-services&cloudshell_tutorial=examples/billboard/billboard-walkthrough.md 
+# https://console.cloud.google.com/cloudshell/editor?cloudshell_git_repo=https://github.com/priyambodo-at-google/gcp-billing-insights&cloudshell_tutorial=README.md 
 #
 # rm -rf bill-env
 # pip install virtualenv
 # virtualenv bill-env
 # source bill-env/bin/activate
 # pip install -r requirements.txt
-# python billboard.py -h
-# python billboard.py -pr <project_id> -se <standard_billing_ds> -bb <billboard_ds>
-# <project id> --> fill this with your project ID
-# <standard billing ds> --> fill this with your standard billing dataset that you configure from billing
-# <billboard_ds> --> 
+# python billinginsights.py -h
+#
+# python billinginsights.py -pr <project_id> -se <standard_billing_ds> -bb <billinginsight_ds>
+# <project id> --> fill this with your existing/current project ID 
+# <standard billing ds> --> fill this with your existing/current standard billing dataset that you configure from billing
+# <billinginsight_ds> --> dataset of your bigquery to store the view of the billing insight
 # Example:
-# python billboard.py -pr core-billing -se my_priyambodo_argolis_billing_export -bb my_priyambodo_argolis_billing_billboard
+# python billinginsights.py -pr core-billing -se my_priyambodo_argolis_billing_export -bb my_priyambodo_argolis_billing_billboard
+# OR
+# python billinginsights.py -pr biracaritdotcom-production -se bicaraitcom_dataset_billing_standard -bb bicaraitcom_dataset_billing_datastudio
+#
 # Explore the datastudio dashboard and explore your billing by clicking the link which was the output of the script:
 # ex: https://datastudio.google.com/reporting/949b9d13-3cc3-486e-beb7-ec9919a62288/page/vSVyB 
-# 
 
 from google.cloud import bigquery
 from google.cloud import billing
@@ -137,9 +141,6 @@ def create_billboard_view(args, isStandard):
         output_url = report_base_url + standard_view_url.format(
             args.PROJECT_ID, args.BILLBOARD_DATASET_NAME_TO_BE_CREATED,
             args.bb_standard)
-    else:
-        output_url = output_url + detailed_view_url.format(
-            args.PROJECT_ID, detailedBBDataset, args.bb_detailed)
 
     print('Created view {}{}.{}.{}'.format(Back.GREEN, job.destination.project,
                                            job.destination.dataset_id,
@@ -165,17 +166,11 @@ def remove_billboard_dataset(args):
         args.bb_standard)
     bq_client.delete_table(standard_view_id, not_found_ok=True)
     print("Billboard view {} deleted.".format(standard_view_id))
-    detailed_view_id = "{}.{}.{}".format(
-        args.PROJECT_ID, args.BILLBOARD_DATASET_NAME_TO_BE_CREATED,
-        args.bb_detailed)
-    bq_client.delete_table(detailed_view_id, not_found_ok=True)
-    print("Billboard view {} deleted.".format(detailed_view_id))
     return True
 
 
 def main(argv):
 
-    global detailedBBDataset
     parser = argparse.ArgumentParser(
         description='Billing Export information, Version=' + app_version)
     parser.add_argument('-v',
@@ -191,11 +186,6 @@ def main(argv):
                         dest='STANDARD_BILLING_EXPORT_DATASET_NAME',
                         type=str,
                         required=True)
-    parser.add_argument('-de',
-                        dest='DETAILED_BILLING_EXPORT_DATASET_NAME',
-                        type=str,
-                        required=True)
-
     parser.add_argument('-bb',
                         dest='BILLBOARD_DATASET_NAME_TO_BE_CREATED',
                         type=str,
@@ -208,14 +198,6 @@ def main(argv):
 
     args = parser.parse_args()
     print('Version of billboard.py  ' + app_version + "\n")
-
-    if args.DETAILED_BILLING_EXPORT_DATASET_NAME is None:
-        print("Detailed export not provided so setting default to Standard.")
-        args.DETAILED_BILLING_EXPORT_DATASET_NAME = args.STANDARD_BILLING_EXPORT_DATASET_NAME
-
-    # Detailed Export could be in different region so name will be modified as {}_detail in logic
-    # So we are storing in global variable.
-    detailedBBDataset = '{}'.format(args.BILLBOARD_DATASET_NAME_TO_BE_CREATED)
 
     project_id_temp = "projects/{}".format(args.PROJECT_ID)
     try:
@@ -233,16 +215,11 @@ def main(argv):
     print("Project billing account=" + billing_account_name, "\n")
     args.standard_table = "gcp_billing_export_v1_" + \
         billing_account_name.replace('-', '_')
-    args.detailed_table = "gcp_billing_export_resource_v1_" + \
-        billing_account_name.replace('-', '_')
     args.bb_standard = "billboard"
-    args.bb_detailed = "billboard_detail"
 
     if args.clean is None:
         create_dataset(args)  # to create dataset
         create_billboard_view(args, True)  # to create standard view
-        # if args.DETAILED_BILLING_EXPORT_DATASET_NAME is not None:
-        create_billboard_view(args, False)  # to create detailed view
         generate_datastudio_url(args)  # to create urls
     else:
         remove_billboard_dataset(args)  # to cleanup
