@@ -1,3 +1,5 @@
+# python billinginsights1.py -pr bicaraitdotcom-production -se bicaraitcom_dataset_billing_standard -bb bicaraitcom_dataset_billing_datastudio
+
 from google.cloud import bigquery
 from google.cloud import billing
 from google.api_core.exceptions import PermissionDenied
