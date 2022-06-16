@@ -24,7 +24,8 @@ from colorama import Style
 bq_client = bigquery.Client()
 
 base_url = "https://datastudio.google.com/reporting/create?"
-report_part_url = base_url + "c.reportId=2e2ea000-8f68-40e2-8847-b80f05069b6e"
+#report_part_url = base_url + "c.reportId=2e2ea000-8f68-40e2-8847-b80f05069b6e"
+report_part_url = base_url + "c.reportId=c503be1b-f204-4141-adfe-0364491ebfd1"
 report_base_url = report_part_url + "&r.reportName=MyBillboard"
 
 std_proj_url = "&ds.ds39.connector=bigQuery&ds.ds39.projectId={}"
