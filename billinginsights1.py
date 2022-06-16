@@ -12,9 +12,9 @@ from colorama import Style
 bq_client = bigquery.Client()
 app_version = "1.0"
 
-# This function checks if billboard dataset already exists or not
+# This function checks if vw_gcpbillinginsights_standard dataset already exists or not
 # so that we are not recreating it
-def check_billboard_dataset_exists(dataset_id):
+def check_vw_gcpbillinginsights_standard_dataset_exists(dataset_id):
     try:
         bq_client.get_dataset(dataset_id)  # Make an API request.
         print("Dataset {} already exists.".format(dataset_id))
@@ -23,7 +23,7 @@ def check_billboard_dataset_exists(dataset_id):
         print("Dataset {} is not found.".format(dataset_id))
         return False
 
-# Creates billboard dataset.
+# Creates vw_gcpbillinginsights_standard dataset.
 # Location is taken from the billing export table provided by the user.
 def create_dataset(args):
 
@@ -40,7 +40,7 @@ def create_dataset(args):
             standard_source_id, standard_table_info.location))
         # Create dataset for BB for standard export.
         dataset_id = "{}.{}".format(args.PROJECT_ID,
-                                    args.BILLBOARD_DATASET_NAME_TO_BE_CREATED)
+                                    args.vw_gcpbillinginsights_standard_DATASET_NAME_TO_BE_CREATED)
         create_dataset_by_location(dataset_id, standard_table_info.location)
     except NotFound:
         print("Table {} is not found check the export and proceed.".format(
@@ -50,11 +50,11 @@ def create_dataset(args):
 
     print("Creating detailed Dataset.")
 
-# Creates billboard dataset based on billing exported location
+# Creates vw_gcpbillinginsights_standard dataset based on billing exported location
 # Location is taken from the billing export table provided by the user.
 def create_dataset_by_location(dataset_id, location):
-    # Check if billboard dataset exists
-    if check_billboard_dataset_exists(dataset_id) is True:
+    # Check if vw_gcpbillinginsights_standard dataset exists
+    if check_vw_gcpbillinginsights_standard_dataset_exists(dataset_id) is True:
         return
     # Since we need to create, construct a full
     # Dataset object to send to the API.
@@ -68,8 +68,8 @@ def create_dataset_by_location(dataset_id, location):
     print("Created dataset {} on location {}".format(dataset_id, location))
 
 
-# Creates the view for the Billboard
-def create_billboard_view(args, isStandard):
+# Creates the view for the vw_gcpbillinginsights_standard
+def create_vw_gcpbillinginsights_standard_view(args, isStandard):
 
     global output_url
     global detailedBBDataset
@@ -79,7 +79,7 @@ def create_billboard_view(args, isStandard):
                                       args.STANDARD_BILLING_EXPORT_DATASET_NAME,
                                       args.standard_table)
         view_id = "{}.{}.{}".format(args.PROJECT_ID,
-                                    args.BILLBOARD_DATASET_NAME_TO_BE_CREATED,
+                                    args.vw_gcpbillinginsights_standard_DATASET_NAME_TO_BE_CREATED,
                                     args.bb_standard)
 
     print('source_id={} and view_id={}'.format(source_id, view_id))
@@ -91,7 +91,7 @@ def create_billboard_view(args, isStandard):
     except NotFound:
         if isStandard is True:
             print("Standard usage cost export not found=" + source_id +
-                  " so skipping billboard view creation")
+                  " so skipping vw_gcpbillinginsights_standard view creation")
             sys.exit()
         return
 
@@ -111,12 +111,12 @@ def create_billboard_view(args, isStandard):
                                            job.destination.table_id))
     print(Style.RESET_ALL)
 
-def remove_billboard_dataset(args):
+def remove_vw_gcpbillinginsights_standard_dataset(args):
     standard_view_id = "{}.{}.{}".format(
-        args.PROJECT_ID, args.BILLBOARD_DATASET_NAME_TO_BE_CREATED,
+        args.PROJECT_ID, args.vw_gcpbillinginsights_standard_DATASET_NAME_TO_BE_CREATED,
         args.bb_standard)
     bq_client.delete_table(standard_view_id, not_found_ok=True)
-    print("Billboard view {} deleted.".format(standard_view_id))
+    print("vw_gcpbillinginsights_standard view {} deleted.".format(standard_view_id))
     return True
 
 def main(argv):
@@ -138,7 +138,7 @@ def main(argv):
                         type=str,
                         required=True)
     parser.add_argument('-bb',
-                        dest='BILLBOARD_DATASET_NAME_TO_BE_CREATED',
+                        dest='vw_gcpbillinginsights_standard_DATASET_NAME_TO_BE_CREATED',
                         type=str,
                         required=True)
     parser.add_argument('-clean',
@@ -147,11 +147,11 @@ def main(argv):
                         help='Only when you need cleanup, provide "yes"')
 
     args = parser.parse_args()
-    print('Version of billboard.py  ' + app_version + "\n")
+    print('Version of vw_gcpbillinginsights_standard.py  ' + app_version + "\n")
 
     # Detailed Export could be in different region so name will be modified as {}_detail in logic
     # So we are storing in global variable.
-    detailedBBDataset = '{}'.format(args.BILLBOARD_DATASET_NAME_TO_BE_CREATED)
+    detailedBBDataset = '{}'.format(args.vw_gcpbillinginsights_standard_DATASET_NAME_TO_BE_CREATED)
 
     project_id_temp = "projects/{}".format(args.PROJECT_ID)
     try:
@@ -169,13 +169,13 @@ def main(argv):
     print("Project billing account=" + billing_account_name, "\n")
     args.standard_table = "gcp_billing_export_v1_" + \
         billing_account_name.replace('-', '_')
-    args.bb_standard = "billboard"
+    args.bb_standard = "vw_gcpbillinginsights_standard"
 
     if args.clean is None:
         create_dataset(args)  # to create dataset
-        create_billboard_view(args, True)  # to create standard view
+        create_vw_gcpbillinginsights_standard_view(args, True)  # to create standard view
     else:
-        remove_billboard_dataset(args)  # to cleanup
+        remove_vw_gcpbillinginsights_standard_dataset(args)  # to cleanup
 
 
 # Main entry point
